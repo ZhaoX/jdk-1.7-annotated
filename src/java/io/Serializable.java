@@ -33,6 +33,10 @@ package java.io;
  * serializable.  The serialization interface has no methods or fields
  * and serves only to identify the semantics of being serializable. <p>
  *
+ * Serializable接口不包含任何属性和方法，
+ * 只用来表明实现该接口的类的对象可以被序列化和反序列化。
+ * (似乎放到现在的java的眼光来看，用注解更合适。)
+ *
  * To allow subtypes of non-serializable classes to be serialized, the
  * subtype may assume responsibility for saving and restoring the
  * state of the supertype's public, protected, and (if accessible)
@@ -53,9 +57,17 @@ package java.io;
  * NotSerializableException will be thrown and will identify the class
  * of the non-serializable object. <p>
  *
+ * 在序列化的过程中，通常是要遍历一个对象的引用图，
+ * 如果发现有被引用的对象没有实现Serializable接口，则抛出NotSerializableException异常。
+ * (感觉编译时就可以找到这个错误，不明白为什么留到运行时）
+ *
  * Classes that require special handling during the serialization and
  * deserialization process must implement special methods with these exact
  * signatures: <p>
+ *
+ * 如果需要在序列化和反序列化过程中，做一些特殊的处理，那么需要实现下面这几个方法。
+ * 如果没有特殊处理需要做，那么就不需要做特别的方法实现，JVM会帮我们做好所有的序列化工作，相当方便。
+ * (通常有哪些特殊的处理需要做呢？)
  *
  * <PRE>
  * private void writeObject(java.io.ObjectOutputStream out)
@@ -160,6 +172,9 @@ package java.io;
  * classes cannot declare an explicit serialVersionUID, so they always have
  * the default computed value, but the requirement for matching
  * serialVersionUID values is waived for array classes.
+ *
+ * 如果一个可序列化的类没有包含serialVersionUID，运行时会根据这个类的特征自动计算出一个serialVersionUID。
+ * 那么，为什么不能用默认的这个实现呢，似乎更省事? 因为不同的编译器实现会导致同一个类的源代码文件，被计算出不同的serialVersionUID.
  *
  * @author  unascribed
  * @see java.io.ObjectOutputStream
