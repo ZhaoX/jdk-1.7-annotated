@@ -35,6 +35,8 @@ package java.util;
  * is typically used to pass collections around and manipulate them where
  * maximum generality is desired.
  *
+ * 容器框架中的根接口。
+ *
  * <p><i>Bags</i> or <i>multisets</i> (unordered collections that may contain
  * duplicate elements) should implement this interface directly.
  *
@@ -50,6 +52,10 @@ package java.util;
  * constructors) but all of the general-purpose <tt>Collection</tt>
  * implementations in the Java platform libraries comply.
  *
+ * 所有Collection实现都应该实现两个构造方法。
+ * 一个是无参构造方法，用来初始化一个空的Collection。
+ * 还一个是只有一个Collection类型的参数的构造方法，该构造方法的存在，允许用户轻松在不同Collection的实现之间转换。
+ *
  * <p>The "destructive" methods contained in this interface, that is, the
  * methods that modify the collection on which they operate, are specified to
  * throw <tt>UnsupportedOperationException</tt> if this collection does not
@@ -59,6 +65,9 @@ package java.util;
  * the {@link #addAll(Collection)} method on an unmodifiable collection may,
  * but is not required to, throw the exception if the collection to be added
  * is empty.
+ *
+ * 什么是破坏性的（destructive）方法？会修改当前collection的方法，就是破坏性方法。
+ * 调用破坏性方法时，如果当前对象不支持该方法，可以抛出UnsupportedOperationException异常。
  *
  * <p><a name="optional-restrictions"/>
  * Some collection implementations have restrictions on the elements that
@@ -75,6 +84,8 @@ package java.util;
  * Such exceptions are marked as "optional" in the specification for this
  * interface.
  *
+ * 不同的collection实现会有不同的限制，比如有些实现不允许包含null元素，还有的只能包含特定类型的元素。
+ *
  * <p>It is up to each collection to determine its own synchronization
  * policy.  In the absence of a stronger guarantee by the
  * implementation, undefined behavior may result from the invocation
@@ -82,6 +93,8 @@ package java.util;
  * thread; this includes direct invocations, passing the collection to
  * a method that might perform invocations, and using an existing
  * iterator to examine the collection.
+ *
+ * 每一种collection实现都需要实现自己的同步策略。本接口并强制规定某种同步策略。
  *
  * <p>Many methods in Collections Framework interfaces are defined in
  * terms of the {@link Object#equals(Object) equals} method.  For example,
@@ -99,6 +112,9 @@ package java.util;
  * the various Collections Framework interfaces are free to take advantage of
  * the specified behavior of underlying {@link Object} methods wherever the
  * implementor deems it appropriate.
+ *
+ * 许多容器方法，依赖对象的equals方法或者hashcode方法，但这并不是必须的。
+ * 引申：为什么覆盖了equals方法就一定要覆盖hashcode方法？
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -132,6 +148,8 @@ public interface Collection<E> extends Iterable<E> {
      * contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
      *
+     * 如果元素个数超过了Integer.MAX_VALUE, 那么就返回Integer.MAX_VALUE.
+     *
      * @return the number of elements in this collection
      */
     int size();
@@ -148,6 +166,8 @@ public interface Collection<E> extends Iterable<E> {
      * More formally, returns <tt>true</tt> if and only if this collection
      * contains at least one element <tt>e</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+     *
+     * 默认调用对象的equals方法。
      *
      * @param o element whose presence in this collection is to be tested
      * @return <tt>true</tt> if this collection contains the specified
@@ -181,6 +201,8 @@ public interface Collection<E> extends Iterable<E> {
      * maintained by this collection.  (In other words, this method must
      * allocate a new array even if this collection is backed by an array).
      * The caller is thus free to modify the returned array.
+     *
+     * 这个方法必须创建一个新的数组来保存对象引用。
      *
      * <p>This method acts as bridge between array-based and collection-based
      * APIs.
@@ -222,6 +244,9 @@ public interface Collection<E> extends Iterable<E> {
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      *
+     * 将一个Collection转换为指定类型（参数）的数组。如果参数给定的数组的大小大于当前容器的大小，
+     * 那么就讲容器中的元素放到该数组中返回，多出的数组空间置null。否则创建同类型的新数组返回。
+     *
      * @param a the array into which the elements of this collection are to be
      *        stored, if it is big enough; otherwise, a new array of the same
      *        runtime type is allocated for this purpose.
@@ -254,6 +279,10 @@ public interface Collection<E> extends Iterable<E> {
      * the invariant that a collection always contains the specified element
      * after this call returns.
      *
+     * 正常添加返回true。已经包含该对象，并且不能包含重复对象，返回false。
+     *
+     * 其它情况添加失败，抛出异常。
+     *
      * @param e element whose presence in this collection is to be ensured
      * @return <tt>true</tt> if this collection changed as a result of the
      *         call
@@ -278,6 +307,9 @@ public interface Collection<E> extends Iterable<E> {
      * this collection contains one or more such elements.  Returns
      * <tt>true</tt> if this collection contained the specified element (or
      * equivalently, if this collection changed as a result of the call).
+     *
+     * 如果容器中包含指定的元素，则移除并返回true。
+     * 如果容器中不包含指定的元素，返回false。
      *
      * @param o element to be removed from this collection, if present
      * @return <tt>true</tt> if an element was removed as a result of this call
@@ -322,6 +354,7 @@ public interface Collection<E> extends Iterable<E> {
      * (This implies that the behavior of this call is undefined if the
      * specified collection is this collection, and this collection is
      * nonempty.)
+     *
      *
      * @param c collection containing elements to be added to this collection
      * @return <tt>true</tt> if this collection changed as a result of the call

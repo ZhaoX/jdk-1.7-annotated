@@ -44,6 +44,9 @@ import java.util.Queue;
  * element, and wait for space to become available in the queue when
  * storing an element.
  *
+ * BlockingQueue是一种Queue。
+ * 除了Queue本身的的借口，其额外支持从队列取数据时等待队列变成非空，往队列放数据时等待队列中空出位置。
+ *
  * <p><tt>BlockingQueue</tt> methods come in four forms, with different ways
  * of handling operations that cannot be satisfied immediately, but may be
  * satisfied at some point in the future:
