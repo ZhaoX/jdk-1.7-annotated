@@ -32,6 +32,9 @@ package java.io;
  * <p> Applications that need to define a subclass of <code>InputStream</code>
  * must always provide a method that returns the next byte of input.
  *
+ * 所有输入流的抽象基类。
+ * 所有该类的子类，必须提供一个返回输入流中下一个字节的方法。
+ *
  * @author  Arthur van Hoff
  * @see     java.io.BufferedInputStream
  * @see     java.io.ByteArrayInputStream
@@ -56,6 +59,9 @@ public abstract class InputStream implements Closeable {
      * blocks until input data is available, the end of the stream is detected,
      * or an exception is thrown.
      *
+     * 读取输入流中的下一个字节。
+     * 该方法是阻塞的。
+     *
      * <p> A subclass must provide an implementation of this method.
      *
      * @return     the next byte of data, or <code>-1</code> if the end of the
@@ -75,6 +81,8 @@ public abstract class InputStream implements Closeable {
      * least one byte. If no byte is available because the stream is at the
      * end of the file, the value <code>-1</code> is returned; otherwise, at
      * least one byte is read and stored into <code>b</code>.
+     *
+     * 除非整到读到了输入流末尾。不然该方法最少会读取一个字节到数据b中。
      *
      * <p> The first byte read is stored into element <code>b[0]</code>, the
      * next one into <code>b[1]</code>, and so on. The number of bytes read is,
@@ -142,6 +150,12 @@ public abstract class InputStream implements Closeable {
      * end of file is detected, or an exception is thrown. Subclasses are encouraged
      * to provide a more efficient implementation of this method.
      *
+     * 该方法默认的实现是阻塞的，即一直阻塞，知道读到len个字节的数据，或者遇到文件结束，或者出现异常。
+     *
+     * 该方法重复调用read()方法来实现批量读取的功能.
+     * 如果读取第一个字节的时候发生异常，则抛出该异常给调用方;
+     * 如果在读取中间某个字节时，发生异常，则返回已经读到的数据给调用方。
+     *
      * @param      b     the buffer into which the data is read.
      * @param      off   the start offset in array <code>b</code>
      *                   at which the data is written.
@@ -196,11 +210,18 @@ public abstract class InputStream implements Closeable {
      * The actual number of bytes skipped is returned.  If <code>n</code> is
      * negative, no bytes are skipped.
      *
+     * 实际skip的字节数有可能小于n，这种情况下，返回实际skip的字节数。
+     *
      * <p> The <code>skip</code> method of this class creates a
      * byte array and then repeatedly reads into it until <code>n</code> bytes
      * have been read or the end of the stream has been reached. Subclasses are
      * encouraged to provide a more efficient implementation of this method.
      * For instance, the implementation may depend on the ability to seek.
+     *
+     * 该方法的默认实现，是通过建立一个大小为MAX_SKIP_BUFFER_SIZE的缓冲区，来不断读取，知道到达所需位置。
+     * 子类可以继承该方法，提供更高效的实现。比如，对于文件系统，可以利用seek来实现skip的功能。
+     *
+     * 注意到read使用的参数类型是int，而skip使用的是long。
      *
      * @param      n   the number of bytes to be skipped.
      * @return     the actual number of bytes skipped.
@@ -241,12 +262,16 @@ public abstract class InputStream implements Closeable {
      * never correct to use the return value of this method to allocate
      * a buffer intended to hold all data in this stream.
      *
+     * 返回值并不一定代表输入流的数据总量。
+     *
      * <p> A subclass' implementation of this method may choose to throw an
      * {@link IOException} if this input stream has been closed by
      * invoking the {@link #close()} method.
      *
      * <p> The {@code available} method for class {@code InputStream} always
      * returns {@code 0}.
+     *
+     * 默认实现总是返回0。
      *
      * <p> This method should be overridden by subclasses.
      *
@@ -275,9 +300,14 @@ public abstract class InputStream implements Closeable {
      * the <code>reset</code> method repositions this stream at the last marked
      * position so that subsequent reads re-read the same bytes.
      *
+     * Mark输入流的当前位置。
+     * Mark之后，正常使用该输入流。但再执行的reset的方法，会将输入流的当前位置reset为之前mark的位置。
+     *
      * <p> The <code>readlimit</code> arguments tells this input stream to
      * allow that many bytes to be read before the mark position gets
      * invalidated.
+     *
+     * 参数readlimit，表明了mark的有效期。即，mark之后，读取readlimit个字节之后，本次mark失效。
      *
      * <p> The general contract of <code>mark</code> is that, if the method
      * <code>markSupported</code> returns <code>true</code>, the stream somehow
@@ -289,8 +319,12 @@ public abstract class InputStream implements Closeable {
      *
      * <p> Marking a closed stream should not have any effect on the stream.
      *
+     * Mark一个已经关闭的输入流，不产生任何效果。
+     *
      * <p> The <code>mark</code> method of <code>InputStream</code> does
      * nothing.
+     *
+     * 注意该方法是线程同步的，为什么mark, reset两个方法是同步的，而read，skip等则不是呢？
      *
      * @param   readlimit   the maximum limit of bytes that can be read before
      *                      the mark position becomes invalid.
@@ -308,12 +342,15 @@ public abstract class InputStream implements Closeable {
      *
      * <li> If the method <code>markSupported</code> returns
      * <code>true</code>, then:
+     * 如果markSupported方法返回true，那么：
      *
      *     <ul><li> If the method <code>mark</code> has not been called since
      *     the stream was created, or the number of bytes read from the stream
      *     since <code>mark</code> was last called is larger than the argument
      *     to <code>mark</code> at that last call, then an
      *     <code>IOException</code> might be thrown.
+     *     如果在调用reset之前没有调用过mark，或者读取的字节数已经超出了mark的readLimit限制，
+     *     那么，抛出IOException。
      *
      *     <li> If such an <code>IOException</code> is not thrown, then the
      *     stream is reset to a state such that all the bytes read since the
@@ -322,9 +359,12 @@ public abstract class InputStream implements Closeable {
      *     to subsequent callers of the <code>read</code> method, followed by
      *     any bytes that otherwise would have been the next input data as of
      *     the time of the call to <code>reset</code>. </ul>
+     *     如果IOException没有抛出。那么reset这个输入流到最近一次mark的位置，
+     *     或者到输入流的开头（如果mark没有被调用过）。
      *
      * <li> If the method <code>markSupported</code> returns
      * <code>false</code>, then:
+     * 如果markSupported方法返回false，那么：
      *
      *     <ul><li> The call to <code>reset</code> may throw an
      *     <code>IOException</code>.
@@ -353,6 +393,8 @@ public abstract class InputStream implements Closeable {
      * <code>reset</code> are supported is an invariant property of a
      * particular input stream instance. The <code>markSupported</code> method
      * of <code>InputStream</code> returns <code>false</code>.
+     *
+     * 如果该输入流支持mark和reset方法，那么返回true，否则返回false。
      *
      * @return  <code>true</code> if this stream instance supports the mark
      *          and reset methods; <code>false</code> otherwise.
