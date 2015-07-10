@@ -40,6 +40,8 @@ import sun.security.action.GetPropertyAction;
 /**
  * An abstract representation of file and directory pathnames.
  *
+ * 文件或者目录的抽象表示
+ *
  * <p> User interfaces and operating systems use system-dependent <em>pathname
  * strings</em> to name files and directories.  This class presents an
  * abstract, system-independent view of hierarchical pathnames.  An
@@ -51,6 +53,9 @@ import sun.security.action.GetPropertyAction;
  *      directory, or <code>"\\\\"</code>&nbsp;for a Microsoft Windows UNC pathname, and
  * <li> A sequence of zero or more string <em>names</em>.
  * </ol>
+ *
+ * 路径名称是跟系统相关的，在linux上可能是/开头，在Windows上可能是硬盘描述符或者"\\\\"开头。
+ * "\\\\"代表远程机器上的文件。
  *
  * The first name in an abstract pathname may be a directory name or, in the
  * case of Microsoft Windows UNC pathnames, a hostname.  Each subsequent name
@@ -78,6 +83,8 @@ import sun.security.action.GetPropertyAction;
  * current user directory.  This directory is named by the system property
  * <code>user.dir</code>, and is typically the directory in which the Java
  * virtual machine was invoked.
+ *
+ * 路径可以是绝对路径也可以是相对路径。
  *
  * <p> The <em>parent</em> of an abstract pathname may be obtained by invoking
  * the {@link #getParent} method of this class and consists of the pathname's
@@ -117,6 +124,8 @@ import sun.security.action.GetPropertyAction;
  * partition <a name="partName">named</a> by some ancestor of the absolute
  * form of this pathname.
  *
+ * 该类的实例，可以在文件系统中有实际对应的文件，也可以没有。
+ *
  * <p> A file system may implement restrictions to certain operations on the
  * actual file-system object, such as reading, writing, and executing.  These
  * restrictions are collectively known as <i>access permissions</i>.  The file
@@ -129,7 +138,10 @@ import sun.security.action.GetPropertyAction;
  * created, the abstract pathname represented by a <code>File</code> object
  * will never change.
  *
+ * File对象是不可变的，也就是说，一旦创建结束，该文件的pathname是不能修改的。
+ *
  * <h4>Interoperability with {@code java.nio.file} package</h4>
+ * 该类可与java.nio.file包交互使用。
  *
  * <p> The <a href="../../java/nio/file/package-summary.html">{@code java.nio.file}</a>
  * package defines interfaces and classes for the Java virtual machine to access
@@ -152,6 +164,7 @@ public class File
 
     /**
      * The FileSystem object representing the platform's local file system.
+     * 代表本地文件系统的对象
      */
     static private FileSystem fs = FileSystem.getFileSystem();
 
@@ -159,6 +172,8 @@ public class File
      * This abstract pathname's normalized pathname string. A normalized
      * pathname string uses the default name-separator character and does not
      * contain any duplicate or redundant separators.
+     *
+     * 文件路径。该路径是一个正规化的路径，使用默认的名字分隔符，并且不含重复和多余的文件分隔符。
      *
      * @serial
      */
@@ -228,6 +243,8 @@ public class File
      * separate filenames in a sequence of files given as a <em>path list</em>.
      * On UNIX systems, this character is <code>':'</code>; on Microsoft Windows systems it
      * is <code>';'</code>.
+     *
+     * 路径分隔符。在unix系统中是:，Windows系统中是;。
      *
      * @see     java.lang.System#getProperty(java.lang.String)
      */
