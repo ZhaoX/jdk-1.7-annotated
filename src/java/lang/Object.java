@@ -67,8 +67,10 @@ public class Object {
      * Returns a hash code value for the object. This method is
      * supported for the benefit of hash tables such as those provided by
      * {@link java.util.HashMap}.
+     * 为该对象计算Hash值
      * <p>
      * The general contract of {@code hashCode} is:
+     * 通常有如下约定
      * <ul>
      * <li>Whenever it is invoked on the same object more than once during
      *     an execution of a Java application, the {@code hashCode} method
@@ -76,15 +78,18 @@ public class Object {
      *     used in {@code equals} comparisons on the object is modified.
      *     This integer need not remain consistent from one execution of an
      *     application to another execution of the same application.
+     * 同一个对象多次执行该方法返回相同的hash值
      * <li>If two objects are equal according to the {@code equals(Object)}
      *     method, then calling the {@code hashCode} method on each of
      *     the two objects must produce the same integer result.
+     * 如果两个对象是equals的，那么他们应该有相同的hash值
      * <li>It is <em>not</em> required that if two objects are unequal
      *     according to the {@link java.lang.Object#equals(java.lang.Object)}
      *     method, then calling the {@code hashCode} method on each of the
      *     two objects must produce distinct integer results.  However, the
      *     programmer should be aware that producing distinct integer results
      *     for unequal objects may improve the performance of hash tables.
+     * 并不要求不equal的对象具有不同的hash值，但是如果能够做到这样的话，hash table会有更好的性能。
      * </ul>
      * <p>
      * As much as is reasonably practical, the hashCode method defined by
@@ -93,6 +98,7 @@ public class Object {
      * address of the object into an integer, but this implementation
      * technique is not required by the
      * Java<font size="-2"><sup>TM</sup></font> programming language.)
+     * 一般默认的实现，是会把对象的内存地址转换成整数返回。
      *
      * @return  a hash code value for this object.
      * @see     java.lang.Object#equals(java.lang.Object)
@@ -102,6 +108,7 @@ public class Object {
 
     /**
      * Indicates whether some other object is "equal to" this one.
+     * 用来判断一个对象是否与当前对象相等
      * <p>
      * The {@code equals} method implements an equivalence relation
      * on non-null object references:
@@ -109,24 +116,29 @@ public class Object {
      * <li>It is <i>reflexive</i>: for any non-null reference value
      *     {@code x}, {@code x.equals(x)} should return
      *     {@code true}.
+     * 对象跟自己是相等的
      * <li>It is <i>symmetric</i>: for any non-null reference values
      *     {@code x} and {@code y}, {@code x.equals(y)}
      *     should return {@code true} if and only if
      *     {@code y.equals(x)} returns {@code true}.
+     * 满足交换律
      * <li>It is <i>transitive</i>: for any non-null reference values
      *     {@code x}, {@code y}, and {@code z}, if
      *     {@code x.equals(y)} returns {@code true} and
      *     {@code y.equals(z)} returns {@code true}, then
      *     {@code x.equals(z)} should return {@code true}.
+     * 满足传递律
      * <li>It is <i>consistent</i>: for any non-null reference values
      *     {@code x} and {@code y}, multiple invocations of
      *     {@code x.equals(y)} consistently return {@code true}
      *     or consistently return {@code false}, provided no
      *     information used in {@code equals} comparisons on the
      *     objects is modified.
+     * 在equals执行过程中不应该对对象做任何修改
      * <li>For any non-null reference value {@code x},
      *     {@code x.equals(null)} should return {@code false}.
      * </ul>
+     * 任何对象都与null不相等
      * <p>
      * The {@code equals} method for class {@code Object} implements
      * the most discriminating possible equivalence relation on objects;
@@ -134,11 +146,13 @@ public class Object {
      * {@code y}, this method returns {@code true} if and only
      * if {@code x} and {@code y} refer to the same object
      * ({@code x == y} has the value {@code true}).
+     * 默认实现是比较引用的地址，也就是说，只有指向同一个对象的两个引用才是相等的。
      * <p>
      * Note that it is generally necessary to override the {@code hashCode}
      * method whenever this method is overridden, so as to maintain the
      * general contract for the {@code hashCode} method, which states
      * that equal objects must have equal hash codes.
+     * 如果要重写该方法，那么要确保重写hashcode方法，以满足相等的两个对象具有相同的hash值。
      *
      * @param   obj   the reference object with which to compare.
      * @return  {@code true} if this object is the same as the obj
@@ -154,6 +168,7 @@ public class Object {
      * Creates and returns a copy of this object.  The precise meaning
      * of "copy" may depend on the class of the object. The general
      * intent is that, for any object {@code x}, the expression:
+     * 创建并返回一个对象的copy
      * <blockquote>
      * <pre>
      * x.clone() != x</pre></blockquote>
@@ -162,11 +177,13 @@ public class Object {
      * <pre>
      * x.clone().getClass() == x.getClass()</pre></blockquote>
      * will be {@code true}, but these are not absolute requirements.
+     * 返回的对象肯定具有相同的类型
      * While it is typically the case that:
      * <blockquote>
      * <pre>
      * x.clone().equals(x)</pre></blockquote>
      * will be {@code true}, this is not an absolute requirement.
+     * 返回的对象与原来的对象通常是相等的，但并不强制要求这一点。
      * <p>
      * By convention, the returned object should be obtained by calling
      * {@code super.clone}.  If a class and all of its superclasses (except
@@ -183,6 +200,8 @@ public class Object {
      * primitive fields or references to immutable objects, then it is usually
      * the case that no fields in the object returned by {@code super.clone}
      * need to be modified.
+     * 深度copy，返回的不是同一个对象的不同引用，而是一个新对象。
+     * 所以，对象的内容有可能会被改变。改变的通常是指向其它对象的引用。
      * <p>
      * The method {@code clone} for class {@code Object} performs a
      * specific cloning operation. First, if the class of this object does
@@ -554,6 +573,7 @@ public class Object {
      * determines that there are no more references to the object.
      * A subclass overrides the {@code finalize} method to dispose of
      * system resources or to perform other cleanup.
+     * GC该对象之前调用此方法
      * <p>
      * The general contract of {@code finalize} is that it is invoked
      * if and when the Java<font size="-2"><sup>TM</sup></font> virtual
@@ -579,6 +599,7 @@ public class Object {
      * be holding any user-visible synchronization locks when finalize is
      * invoked. If an uncaught exception is thrown by the finalize method,
      * the exception is ignored and finalization of that object terminates.
+     * 该方法中抛出的任何异常都会被忽略
      * <p>
      * After the {@code finalize} method has been invoked for an object, no
      * further action is taken until the Java virtual machine has again
@@ -589,6 +610,7 @@ public class Object {
      * <p>
      * The {@code finalize} method is never invoked more than once by a Java
      * virtual machine for any given object.
+     * 只会执行一次
      * <p>
      * Any exception thrown by the {@code finalize} method causes
      * the finalization of this object to be halted, but is otherwise
