@@ -28,9 +28,16 @@ package java.util;
 /**
  * An object that maps keys to values.  A map cannot contain duplicate keys;
  * each key can map to at most one value.
+
+ * 实现了Map接口的对象提供键值映射功能，Map中不能保存重复的key，一个key最多只能
+ * 映射到一个value。
+
  *
  * <p>This interface takes the place of the <tt>Dictionary</tt> class, which
  * was a totally abstract class rather than an interface.
+
+ * 本接口用来替换掉Dictionary类，Dictionary类是一个抽象类而不是接口。
+
  *
  * <p>The <tt>Map</tt> interface provides three <i>collection views</i>, which
  * allow a map's contents to be viewed as a set of keys, collection of values,
@@ -39,6 +46,14 @@ package java.util;
  * elements.  Some map implementations, like the <tt>TreeMap</tt> class, make
  * specific guarantees as to their order; others, like the <tt>HashMap</tt>
  * class, do not.
+
+ * Map接口提供三种容器视图。包含所有key的set、包含所有value的collection、包含
+ * 所有键值对的set。
+
+ * 在遍历保存在Map中的键值对时，其顺序是不确定的，取决于具体的实现方式。比如
+ * TreeMap会根据key的内容排序、LinkedHashMap会保存插入键值对的顺序，HashMap则
+ * 没有明确的规则。
+
  *
  * <p>Note: great care must be exercised if mutable objects are used as map
  * keys.  The behavior of a map is not specified if the value of an object is
@@ -48,6 +63,11 @@ package java.util;
  * permissible for a map to contain itself as a value, extreme caution is
  * advised: the <tt>equals</tt> and <tt>hashCode</tt> methods are no longer
  * well defined on such a map.
+
+ * 如果对象是可变的，那么将它用作Map的key时就要特别小心了。如果一个已经存到Map
+ * 中的键值对，其key对象改变了，并且影响了equals方法，那么Map在处理该键值对时
+ * 的行为是未定义的。
+
  *
  * <p>All general-purpose map implementation classes should provide two
  * "standard" constructors: a void (no arguments) constructor which creates an
@@ -57,6 +77,12 @@ package java.util;
  * producing an equivalent map of the desired class.  There is no way to
  * enforce this recommendation (as interfaces cannot contain constructors) but
  * all of the general-purpose map implementations in the JDK comply.
+
+ * Map接口的实现应当实现两个构造方法，一个空的构造方法，一个接受另一个Map对象。
+
+ * 因为Java的接口不能包含构造方法，所以我们没法保证这一点。但是所有JDK的Map实现
+ * 都是这样做的。
+
  *
  * <p>The "destructive" methods contained in this interface, that is, the
  * methods that modify the map on which they operate, are specified to throw
@@ -66,6 +92,10 @@ package java.util;
  * have no effect on the map.  For example, invoking the {@link #putAll(Map)}
  * method on an unmodifiable map may, but is not required to, throw the
  * exception if the map whose mappings are to be "superimposed" is empty.
+
+ * 该接口包含了改变Map的方法。如果你想实现一个不支持这些方法的Map，那么只需要
+ * 在这些方法中返回UnsupportedOperationException异常就好了。
+
  *
  * <p>Some map implementations have restrictions on the keys and values they
  * may contain.  For example, some implementations prohibit null keys and
@@ -80,10 +110,16 @@ package java.util;
  * throw an exception or it may succeed, at the option of the implementation.
  * Such exceptions are marked as "optional" in the specification for this
  * interface.
+
+ * 有些Map实现会在key或value上加一些限制，不如不能包含null之类的。
+
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
+
+ * 本接口是Java容器框架的一部分。
+
  *
  * <p>Many methods in Collections Framework interfaces are defined
  * in terms of the {@link Object#equals(Object) equals} method.  For
@@ -101,6 +137,9 @@ package java.util;
  * the various Collections Framework interfaces are free to take advantage of
  * the specified behavior of underlying {@link Object} methods wherever the
  * implementor deems it appropriate.
+
+ * Java容器框架通常都会用到对象的equals和hashCode方法。
+
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
@@ -113,6 +152,9 @@ package java.util;
  * @see Collection
  * @see Set
  * @since 1.2
+
+ * 自Java 1.2开始，该接口诞生。
+
  */
 public interface Map<K,V> {
     // Query Operations
@@ -121,6 +163,9 @@ public interface Map<K,V> {
      * Returns the number of key-value mappings in this map.  If the
      * map contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
      * <tt>Integer.MAX_VALUE</tt>.
+     
+     * 返回键值对的个数。如果个数超过了Integer.MAX_VALUE，那么返回Integer.MAX_VALUE。
+
      *
      * @return the number of key-value mappings in this map
      */
@@ -128,6 +173,9 @@ public interface Map<K,V> {
 
     /**
      * Returns <tt>true</tt> if this map contains no key-value mappings.
+   
+     * 判断该Map是否不包含任何键值对。
+
      *
      * @return <tt>true</tt> if this map contains no key-value mappings
      */
@@ -139,6 +187,8 @@ public interface Map<K,V> {
      * this map contains a mapping for a key <tt>k</tt> such that
      * <tt>(key==null ? k==null : key.equals(k))</tt>.  (There can be
      * at most one such mapping.)
+
+     * 判断Map中是否包含键为key的键值对。
      *
      * @param key key whose presence in this map is to be tested
      * @return <tt>true</tt> if this map contains a mapping for the specified
@@ -147,8 +197,7 @@ public interface Map<K,V> {
      *         this map
      * (<a href="Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if the specified key is null and this map
-     *         does not permit null keys
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
+     *         does not permit null keys * (<a href="Collection.html#optional-restrictions">optional</a>)
      */
     boolean containsKey(Object key);
 
@@ -159,6 +208,9 @@ public interface Map<K,V> {
      * <tt>(value==null ? v==null : value.equals(v))</tt>.  This operation
      * will probably require time linear in the map size for most
      * implementations of the <tt>Map</tt> interface.
+
+     * 判断Map中是否包含值为value的键值对。
+
      *
      * @param value value whose presence in this map is to be tested
      * @return <tt>true</tt> if this map maps one or more keys to the
@@ -175,6 +227,9 @@ public interface Map<K,V> {
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code null} if this map contains no mapping for the key.
+     
+     * 根据给定的key返回相应的value。如果不存在相应的键值对，则返回null。
+
      *
      * <p>More formally, if this map contains a mapping from a key
      * {@code k} to a value {@code v} such that {@code (key==null ? k==null :
@@ -209,6 +264,12 @@ public interface Map<K,V> {
      * if {@link #containsKey(Object) m.containsKey(k)} would return
      * <tt>true</tt>.)
      *
+
+     * 如果已经存在一个具有相同key的键值对，那么将该键值对的value修改为指定
+     * 的value，并将旧的value返回。
+
+     * 如果不存在具有相同key的键值对，那么返回null。
+
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or
@@ -303,6 +364,10 @@ public interface Map<K,V> {
      * the iterator's own <tt>remove</tt> operation), the results of
      * the iteration are undefined.  The set supports element removal,
      * which removes the corresponding mapping from the map, via the
+   
+     * 返回一个包含所有key的set。该set的背后是map，改变map会影响到该set,
+     * 改变set，也会影响到map。
+
      * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>,
      * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
@@ -325,6 +390,10 @@ public interface Map<K,V> {
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
      *
+   
+     * 返回一个包含所有value的collection。该collection的背后是map，改变map会影响到该collection,
+     * 改变collection，也会影响到map。
+
      * @return a collection view of the values contained in this map
      */
     Collection<V> values();
@@ -343,6 +412,10 @@ public interface Map<K,V> {
      * <tt>clear</tt> operations.  It does not support the
      * <tt>add</tt> or <tt>addAll</tt> operations.
      *
+
+     * 返回一个包含所有键值对的set。该set的背后是map，改变map会影响到该set,
+     * 改变set，也会影响到map。
+
      * @return a set view of the mappings contained in this map
      */
     Set<Map.Entry<K, V>> entrySet();
@@ -356,6 +429,9 @@ public interface Map<K,V> {
      * the behavior of a map entry is undefined if the backing map has been
      * modified after the entry was returned by the iterator, except through
      * the <tt>setValue</tt> operation on the map entry.
+
+     * 该接口用来表示一个键值对     
+
      *
      * @see Map#entrySet()
      * @since 1.2
@@ -454,6 +530,9 @@ public interface Map<K,V> {
      * <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
      * <tt>equals</tt> method works properly across different implementations
      * of the <tt>Map</tt> interface.
+
+     * 如果两个Map包含相同的键值对，那么这两个Map相等。     
+
      *
      * @param o object to be compared for equality with this map
      * @return <tt>true</tt> if the specified object is equal to this map
@@ -467,6 +546,9 @@ public interface Map<K,V> {
      * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
      * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
      * {@link Object#hashCode}.
+     
+     * Map的hashCode定义为所有Entry的hashCode之和。
+
      *
      * @return the hash code value for this map
      * @see Map.Entry#hashCode()
