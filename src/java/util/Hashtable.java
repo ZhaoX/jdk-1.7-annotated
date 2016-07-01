@@ -29,10 +29,17 @@ import java.io.*;
 /**
  * This class implements a hash table, which maps keys to values. Any
  * non-<code>null</code> object can be used as a key or as a value. <p>
+
+ * 这个类实现了一个哈希表，用来实现键值映射。任何非null对象都可以作为该
+ * 哈希表的键或者值。
+  
  *
  * To successfully store and retrieve objects from a hashtable, the
  * objects used as keys must implement the <code>hashCode</code>
  * method and the <code>equals</code> method. <p>
+
+ * 所有用作键的对象，都必须实现hashCode和equals这两个方法。
+
  *
  * An instance of <code>Hashtable</code> has two parameters that affect its
  * performance: <i>initial capacity</i> and <i>load factor</i>.  The
@@ -45,11 +52,18 @@ import java.io.*;
  * The initial capacity and load factor parameters are merely hints to
  * the implementation.  The exact details as to when and whether the rehash
  * method is invoked are implementation-dependent.<p>
+
+ * 容量和装填因子是影响哈希表性能的两个重要参数，我们可以配置初始容量和装填因子，
+ * 但这仅仅是建议，真正的实现细节并不一定严格按照这两个参数来。
+
  *
  * Generally, the default load factor (.75) offers a good tradeoff between
  * time and space costs.  Higher values decrease the space overhead but
  * increase the time cost to look up an entry (which is reflected in most
  * <tt>Hashtable</tt> operations, including <tt>get</tt> and <tt>put</tt>).<p>
+
+ * 装填因子的选择，实际上是在时间和空间上进行平衡。通常默认的.75，就是一个很好的设置。
+
  *
  * The initial capacity controls a tradeoff between wasted space and the
  * need for <code>rehash</code> operations, which are time-consuming.
@@ -63,6 +77,10 @@ import java.io.*;
  * entries to be inserted more efficiently than letting it perform
  * automatic rehashing as needed to grow the table. <p>
  *
+
+ * 如果能够预估哈希表中将要存储的键值对数量，那么设置一个大于这个数量的哈希表
+ * 初始容量，将大大加快插入效率，因为这避免了很多自动rehash的操作。
+
  * This example creates a hashtable of numbers. It uses the names of
  * the numbers as keys:
  * <pre>   {@code
@@ -89,6 +107,11 @@ import java.io.*;
  * arbitrary, non-deterministic behavior at an undetermined time in the future.
  * The Enumerations returned by Hashtable's keys and elements methods are
  * <em>not</em> fail-fast.
+
+ * 所有通过该哈希表的"collection view methods"返回的collections获取的迭代器，都具备
+ * fail-fast特性，即当通过迭代器访问数据时，其它线程修改了该哈希表的结构，迭代器会
+ * 抛出ConcurrentModificationException异常。 
+
  *
  * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed
  * as it is, generally speaking, impossible to make any hard guarantees in the
@@ -97,10 +120,16 @@ import java.io.*;
  * Therefore, it would be wrong to write a program that depended on this
  * exception for its correctness: <i>the fail-fast behavior of iterators
  * should be used only to detect bugs.</i>
+
+ * 迭代器的fail-fast特性，并不是严格确保的。因此，不应该因此该特性编写任何业务代码。
+
  *
  * <p>As of the Java 2 platform v1.2, this class was retrofitted to
  * implement the {@link Map} interface, making it a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+
+ * 自Java 2 platform v1.2开始，本类修改为实现Map接口，从而成为Java容器框架的一部分。
+
  *
  * Java Collections Framework</a>.  Unlike the new collection
  * implementations, {@code Hashtable} is synchronized.  If a
@@ -109,6 +138,12 @@ import java.io.*;
  * highly-concurrent implementation is desired, then it is recommended
  * to use {@link java.util.concurrent.ConcurrentHashMap} in place of
  * {@code Hashtable}.
+
+ * 跟容器框架中的新容器不同，Hashtable是同步的。如果不需要线程安全，那么应该使用HashMap；
+ * 如果需要非常高的并发度，且要求线程安全，那么应该使用ConcurrentHashMap。
+
+ * 也就是说，需要线程安全，并且并发度不高的情况下，才会需要HashTable。
+
  *
  * @author  Arthur van Hoff
  * @author  Josh Bloch

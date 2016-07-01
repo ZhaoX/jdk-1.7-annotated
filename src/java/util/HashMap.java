@@ -34,6 +34,13 @@ import java.io.*;
  * unsynchronized and permits nulls.)  This class makes no guarantees as to
  * the order of the map; in particular, it does not guarantee that the order
  * will remain constant over time.
+
+ * 基于哈希表的Map接口实现，实现了所有的map操作，允许键值对的key和value为null。
+
+ * HashMap与HashTable基本相同，除了HashMap不是同步的，并且允许null键和null值。
+
+ * 本实现不保证键值对的顺序，也不保证键值对的顺序是不变的。
+
  *
  * <p>This implementation provides constant-time performance for the basic
  * operations (<tt>get</tt> and <tt>put</tt>), assuming the hash function
@@ -43,6 +50,13 @@ import java.io.*;
  * of key-value mappings).  Thus, it's very important not to set the initial
  * capacity too high (or the load factor too low) if iteration performance is
  * important.
+
+ * 通常来讲，普通的put和get操作具有O(1)的时间复杂度。
+
+ * 对map的collection视图的遍历操作，其时间复杂度跟Map的容量成正比。因此如果这个遍历
+ * 操作的性能对你来说是重要的，那么请不要将map的初始容量设置的过大(或者装填因子设置得
+ * 过低)。
+
  *
  * <p>An instance of <tt>HashMap</tt> has two parameters that affect its
  * performance: <i>initial capacity</i> and <i>load factor</i>.  The
@@ -54,6 +68,9 @@ import java.io.*;
  * current capacity, the hash table is <i>rehashed</i> (that is, internal data
  * structures are rebuilt) so that the hash table has approximately twice the
  * number of buckets.
+
+ * 初始容量和装填因子，是两个重要的初始化参数。
+
  *
  * <p>As a general rule, the default load factor (.75) offers a good tradeoff
  * between time and space costs.  Higher values decrease the space overhead
@@ -69,6 +86,9 @@ import java.io.*;
  * creating it with a sufficiently large capacity will allow the mappings to
  * be stored more efficiently than letting it perform automatic rehashing as
  * needed to grow the table.
+
+ * 以上两段与hashtable相同，不再赘述。
+
  *
  * <p><strong>Note that this implementation is not synchronized.</strong>
  * If multiple threads access a hash map concurrently, and at least one of
@@ -78,12 +98,18 @@ import java.io.*;
  * associated with a key that an instance already contains is not a
  * structural modification.)  This is typically accomplished by
  * synchronizing on some object that naturally encapsulates the map.
+
+ * 本实现不是同步的。这意味着如果有多个线程同时访问该map，并且其中有至少一个
+ * 线程会修改map，那么就必须在map外部进行线程同步。
+
  *
  * If no such object exists, the map should be "wrapped" using the
  * {@link Collections#synchronizedMap Collections.synchronizedMap}
  * method.  This is best done at creation time, to prevent accidental
  * unsynchronized access to the map:<pre>
  *   Map m = Collections.synchronizedMap(new HashMap(...));</pre>
+
+ * 可以使用Collections.synchronizedMap来为map添加同步功能。
  *
  * <p>The iterators returned by all of this class's "collection view methods"
  * are <i>fail-fast</i>: if the map is structurally modified at any time after
@@ -101,6 +127,8 @@ import java.io.*;
  * Therefore, it would be wrong to write a program that depended on this
  * exception for its correctness: <i>the fail-fast behavior of iterators
  * should be used only to detect bugs.</i>
+
+ * 以上两段跟HashTable相同，不再赘述。
  *
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
