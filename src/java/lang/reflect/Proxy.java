@@ -44,8 +44,11 @@ import sun.security.util.SecurityConstants;
  * {@code Proxy} provides static methods for creating dynamic proxy
  * classes and instances, and it is also the superclass of all
  * dynamic proxy classes created by those methods.
+ * 提供用于创建动态代理类和对象的静态方法，同时作为这些动态代理类的基类。
  *
  * <p>To create a proxy for some interface {@code Foo}:
+ * 为接口Foo创建代理对象的例子：
+ *
  * <pre>
  *     InvocationHandler handler = new MyInvocationHandler(...);
  *     Class proxyClass = Proxy.getProxyClass(
@@ -65,6 +68,7 @@ import sun.security.util.SecurityConstants;
  * class</i> below) is a class that implements a list of interfaces
  * specified at runtime when the class is created, with behavior as
  * described below.
+ * 动态代理类，是指在运行中创建的代理类。
  *
  * A <i>proxy interface</i> is such an interface that is implemented
  * by a proxy class.
@@ -113,6 +117,7 @@ import sun.security.util.SecurityConstants;
  * an array of {@code Method} objects that include all of the
  * methods in those interfaces, and invoking {@code getMethod} will
  * find methods in the proxy interfaces as would be expected.
+ * 针对接口创建动态代理。可针对多个接口创建动态代理。
  *
  * <li>The {@link Proxy#isProxyClass Proxy.isProxyClass} method will
  * return true if it is passed a proxy class-- a class returned by
@@ -217,6 +222,8 @@ import sun.security.util.SecurityConstants;
  * {@code getExceptionTypes} on the {@code Method} object
  * passed to the {@code invoke} method can necessarily be thrown
  * successfully by the {@code invoke} method.
+ *
+ * 总结：基于接口创建动态代理，不支持基于类创建动态代理。
  *
  * @author      Peter Jones
  * @see         InvocationHandler
