@@ -28,19 +28,30 @@ import java.io.*;
 
 /**
  * <p>Hash table and linked list implementation of the <tt>Map</tt> interface,
- * with predictable iteration order.  This implementation differs from
+ * with predictable iteration order.  
+ * 使用哈希表和链表这两种数据结构实现Map接口
+
+ * This implementation differs from
  * <tt>HashMap</tt> in that it maintains a doubly-linked list running through
  * all of its entries.  This linked list defines the iteration ordering,
+ * 与HashMap不同。LinkedHashMap维护了一个包含所有键值对的双向链表
+ * 这个双线链表定义了键值对的遍历顺序
+
  * which is normally the order in which keys were inserted into the map
  * (<i>insertion-order</i>).  Note that insertion order is not affected
  * if a key is <i>re-inserted</i> into the map.  (A key <tt>k</tt> is
  * reinserted into a map <tt>m</tt> if <tt>m.put(k, v)</tt> is invoked when
  * <tt>m.containsKey(k)</tt> would return <tt>true</tt> immediately prior to
  * the invocation.)
+ * 通常这个顺序是键值对插入到LinkedHashMap的顺序。相同的key，顺序以第一次插入为准。
+
  *
  * <p>This implementation spares its clients from the unspecified, generally
  * chaotic ordering provided by {@link HashMap} (and {@link Hashtable}),
- * without incurring the increased cost associated with {@link TreeMap}.  It
+ * without incurring the increased cost associated with {@link TreeMap}. 
+ * 不像HashMap遍历顺序是乱的，也不像TreeMap为了保持有序增加了代价。
+
+ * It
  * can be used to produce a copy of a map that has the same order as the
  * original, regardless of the original map's implementation:
  * <pre>
@@ -53,6 +64,8 @@ import java.io.*;
  * copies it, and later returns results whose order is determined by that of
  * the copy.  (Clients generally appreciate having things returned in the same
  * order they were presented.)
+ * 保持插入顺序的特性，使得LinkedHashMap非常适合用来copy另一个Map。
+
  *
  * <p>A special {@link #LinkedHashMap(int,float,boolean) constructor} is
  * provided to create a linked hash map whose order of iteration is the order
@@ -66,13 +79,21 @@ import java.io.*;
  * other methods generate entry accesses.</i> In particular, operations on
  * collection-views do <i>not</i> affect the order of iteration of the backing
  * map.
+ * 可以在创建LinkedHashMap时指定键值对的遍历顺序为accessOrder
+ * 这使得LinkedHashMap非常适合用来实现LRU Cache
+
  *
  * <p>The {@link #removeEldestEntry(Map.Entry)} method may be overridden to
  * impose a policy for removing stale mappings automatically when new mappings
  * are added to the map.
+ * 提供了删除陈旧数据的方法
+
  *
  * <p>This class provides all of the optional <tt>Map</tt> operations, and
- * permits null elements.  Like <tt>HashMap</tt>, it provides constant-time
+ * permits null elements. 
+ * 支持所有的Map可选操作。允许null key和null value
+
+ *  Like <tt>HashMap</tt>, it provides constant-time
  * performance for the basic operations (<tt>add</tt>, <tt>contains</tt> and
  * <tt>remove</tt>), assuming the hash function disperses elements
  * properly among the buckets.  Performance is likely to be just slightly
@@ -82,6 +103,9 @@ import java.io.*;
  * of the map, regardless of its capacity.  Iteration over a <tt>HashMap</tt>
  * is likely to be more expensive, requiring time proportional to its
  * <i>capacity</i>.
+ * Map基本操作，跟HashMap一样，提供常量时间复杂度。因为要维护额外的双向链表，性能稍逊
+ * 遍历操作的性能要比HashMap好一些
+
  *
  * <p>A linked hash map has two parameters that affect its performance:
  * <i>initial capacity</i> and <i>load factor</i>.  They are defined precisely
@@ -89,6 +113,9 @@ import java.io.*;
  * excessively high value for initial capacity is less severe for this class
  * than for <tt>HashMap</tt>, as iteration times for this class are unaffected
  * by capacity.
+ * initial capacity和load factor的含义跟HashMap相同。
+ * 相对HashMap而言，capacity稍大些也没关系，因为LinkedHashMap的遍历性能只跟size相关，跟capacity无关。
+
  *
  * <p><strong>Note that this implementation is not synchronized.</strong>
  * If multiple threads access a linked hash map concurrently, and at least
@@ -101,7 +128,8 @@ import java.io.*;
  * method.  This is best done at creation time, to prevent accidental
  * unsynchronized access to the map:<pre>
  *   Map m = Collections.synchronizedMap(new LinkedHashMap(...));</pre>
- *
+ * 不是线程安全的
+
  * A structural modification is any operation that adds or deletes one or more
  * mappings or, in the case of access-ordered linked hash maps, affects
  * iteration order.  In insertion-ordered linked hash maps, merely changing
@@ -109,6 +137,8 @@ import java.io.*;
  * a structural modification.  <strong>In access-ordered linked hash maps,
  * merely querying the map with <tt>get</tt> is a structural
  * modification.</strong>)
+ * 对LinkedHashMap而言什么是结构性修改
+
  *
  * <p>The iterators returned by the <tt>iterator</tt> method of the collections
  * returned by all of this class's collection view methods are
@@ -118,6 +148,7 @@ import java.io.*;
  * ConcurrentModificationException}.  Thus, in the face of concurrent
  * modification, the iterator fails quickly and cleanly, rather than risking
  * arbitrary, non-deterministic behavior at an undetermined time in the future.
+ * Iterator具有fail-fast特性
  *
  * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed
  * as it is, generally speaking, impossible to make any hard guarantees in the
@@ -126,6 +157,7 @@ import java.io.*;
  * Therefore, it would be wrong to write a program that depended on this
  * exception for its correctness:   <i>the fail-fast behavior of iterators
  * should be used only to detect bugs.</i>
+ * Fail-fast是best-effort的，不能依赖Fail-fast
  *
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -144,6 +176,8 @@ import java.io.*;
  * @since   1.4
  */
 
+// LinkedHashMap继承了HashMap
+
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
@@ -153,12 +187,14 @@ public class LinkedHashMap<K,V>
 
     /**
      * The head of the doubly linked list.
+     * 双向链表的表头，序列化时可忽略
      */
     private transient Entry<K,V> header;
 
     /**
      * The iteration ordering method for this linked hash map: <tt>true</tt>
      * for access-order, <tt>false</tt> for insertion-order.
+     * 双向建表的排序规则。true是访问顺序；false是插入顺序
      *
      * @serial
      */
@@ -216,6 +252,7 @@ public class LinkedHashMap<K,V>
     /**
      * Constructs an empty <tt>LinkedHashMap</tt> instance with the
      * specified initial capacity, load factor and ordering mode.
+     * 独有的构造方法。在创建LinkedHashMap时指定遍历顺序
      *
      * @param  initialCapacity the initial capacity
      * @param  loadFactor      the load factor
@@ -235,6 +272,7 @@ public class LinkedHashMap<K,V>
      * Called by superclass constructors and pseudoconstructors (clone,
      * readObject) before any entries are inserted into the map.  Initializes
      * the chain.
+     * init方法中初始化链表头
      */
     @Override
     void init() {
@@ -246,6 +284,7 @@ public class LinkedHashMap<K,V>
      * Transfers all entries to new table array.  This method is called
      * by superclass resize.  It is overridden for performance, as it is
      * faster to iterate using our linked list.
+     * 重写transfer方法，利用双向链表优化resize性能
      */
     @Override
     void transfer(HashMap.Entry[] newTable, boolean rehash) {
@@ -263,6 +302,7 @@ public class LinkedHashMap<K,V>
     /**
      * Returns <tt>true</tt> if this map maps one or more keys to the
      * specified value.
+     * 充分利用双向链表
      *
      * @param value value whose presence in this map is to be tested
      * @return <tt>true</tt> if this map maps one or more keys to the
@@ -296,11 +336,13 @@ public class LinkedHashMap<K,V>
      * possible that the map explicitly maps the key to {@code null}.
      * The {@link #containsKey containsKey} operation may be used to
      * distinguish these two cases.
+     * 返回null不代表contains是false
      */
     public V get(Object key) {
         Entry<K,V> e = (Entry<K,V>)getEntry(key);
         if (e == null)
             return null;
+        // 更新该键值对在双向链表中的位置
         e.recordAccess(this);
         return e.value;
     }
@@ -319,6 +361,7 @@ public class LinkedHashMap<K,V>
      */
     private static class Entry<K,V> extends HashMap.Entry<K,V> {
         // These fields comprise the doubly linked list used for iteration.
+        // 增加了前、后指针
         Entry<K,V> before, after;
 
         Entry(int hash, K key, V value, HashMap.Entry<K,V> next) {
@@ -348,16 +391,21 @@ public class LinkedHashMap<K,V>
          * of a pre-existing entry is read by Map.get or modified by Map.set.
          * If the enclosing Map is access-ordered, it moves the entry
          * to the end of the list; otherwise, it does nothing.
+         *
          */
         void recordAccess(HashMap<K,V> m) {
             LinkedHashMap<K,V> lm = (LinkedHashMap<K,V>)m;
+            // 如果使用的是访问序，就移动当前键值对到双向链表结尾
             if (lm.accessOrder) {
+                // 结构性修改，要记录modCount
                 lm.modCount++;
                 remove();
+                // 其实是个双向链表环
                 addBefore(lm.header);
             }
         }
 
+        // 注意这个方法和上一个方法都是HashMap.Entry中就有的方法。所以参数类型是HashMap
         void recordRemoval(HashMap<K,V> m) {
             remove();
         }
@@ -427,6 +475,7 @@ public class LinkedHashMap<K,V>
         super.addEntry(hash, key, value, bucketIndex);
 
         // Remove eldest entry if instructed
+        // 每次添加新的键值对时，都查看是否删除最老的那个。
         Entry<K,V> eldest = header.after;
         if (removeEldestEntry(eldest)) {
             removeEntryForKey(eldest.key);
