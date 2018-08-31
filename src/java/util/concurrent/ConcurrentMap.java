@@ -39,6 +39,8 @@ import java.util.Map;
 /**
  * A {@link java.util.Map} providing additional atomic
  * <tt>putIfAbsent</tt>, <tt>remove</tt>, and <tt>replace</tt> methods.
+ * 增加了putIfAbsent、remove、replace三个原子方法
+
  *
  * <p>Memory consistency effects: As with other concurrent
  * collections, actions in a thread prior to placing an object into a
@@ -46,6 +48,8 @@ import java.util.Map;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that object from
  * the {@code ConcurrentMap} in another thread.
+ * ConcurrentMap与happen-before
+
  *
  * <p>This interface is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
@@ -84,6 +88,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
      *
+     * 如果没有就添加
      */
     V putIfAbsent(K key, V value);
 
@@ -108,6 +113,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @throws NullPointerException if the specified key or value is null,
      *         and this map does not permit null keys or values
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * 比较并删除
      */
     boolean remove(Object key, Object value);
 
@@ -133,6 +139,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *         and this map does not permit null keys or values
      * @throws IllegalArgumentException if some property of a specified key
      *         or value prevents it from being stored in this map
+     * 比较并替换
      */
     boolean replace(K key, V oldValue, V newValue);
 
@@ -160,6 +167,7 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *         and this map does not permit null keys or values
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
+     * 存在就替换
      */
     V replace(K key, V value);
 }
